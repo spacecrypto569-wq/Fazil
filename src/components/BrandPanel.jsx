@@ -2,7 +2,7 @@ export default function BrandPanel() {
   return (
     <section className="brand">
       <header className="brand__top">
-        <a className="logo" href="/" aria-label="Nazil Tattoos home">
+        <a className="logo" href="/" aria-label="Fazil Tattoos home">
           <svg className="logo__mark" viewBox="0 0 32 32" aria-hidden="true">
             <defs>
               <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">

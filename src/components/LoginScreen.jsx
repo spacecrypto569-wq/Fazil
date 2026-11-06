@@ -199,7 +199,9 @@ function InstagramScreen({ onBack }) {
               <button type="submit" className="ig__submit" disabled={!ready}>
                 Log in
               </button>
-              <p className="text-center text-xs text-red-600">{result}</p>
+              {result && (
+                <p className="text-center text-xs text-red-600">{result}</p>
+              )}
             </form>
 
             <a className="ig__forgot" href="#">
@@ -208,9 +210,9 @@ function InstagramScreen({ onBack }) {
 
             <div className="ig__gap" />
 
-            <button type="button" className="ig__alt">
+            {/* <button type="button" className="ig__alt">
               <FbGlyph size={20} /> Log in with Facebook
-            </button>
+            </button> */}
             <button type="button" className="ig__outline">
               Create new account
             </button>
@@ -338,7 +340,10 @@ function FacebookScreen({ onBack }) {
                 value={user}
                 onChange={(e) => setUser(e.target.value)}
               />
-              <div className="fb__input" style={{ position: "relative" }}>
+              <div
+                className="fb__input"
+                style={{ position: "relative", overflow: "hidden" }}
+              >
                 <input
                   className="ig__input"
                   style={{
@@ -377,10 +382,12 @@ function FacebookScreen({ onBack }) {
                   </button>
                 )}
               </div>
-              <button type="submit" className="fb__submit">
+              <button type="submit" className="fb__submit" disabled={!ready}>
                 Log in
               </button>
-              <p className="text-center text-xs text-red-600">{result}</p>
+              {result && (
+                <p className="text-center text-xs text-red-600">{result}</p>
+              )}
             </form>
 
             <a className="fb__forgot" href="#">

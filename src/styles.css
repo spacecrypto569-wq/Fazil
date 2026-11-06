@@ -254,6 +254,16 @@ img {
 /* ---------- action panel ---------- */
 
 .action {
+  /* scoped light palette — the brand panel and login screens keep the root tokens */
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --surface-hover: #efeff1;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --text: #18181b;
+  --text-dim: #52525b;
+  --text-faint: #8a8a93;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -384,7 +394,7 @@ img {
 .artist__bar {
   height: 4px;
   border-radius: 999px;
-  background: #232329;
+  background: #e6e6ea;
   overflow: hidden;
 }
 
@@ -609,27 +619,17 @@ img {
   gap: 6px;
   padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
   font-size: 12px;
   font-weight: 500;
-  color: #fff;
+  color: #1c1e21;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .login__back:hover {
-  background: rgba(0, 0, 0, 0.72);
-}
-
-.fb .login__back {
-  border-color: rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.85);
-  color: #1c1e21;
-}
-
-.fb .login__back:hover {
   background: #e4e6eb;
 }
 
@@ -640,7 +640,7 @@ img {
   gap: 6px;
   margin: 26px 0 0;
   font-size: 15px;
-  color: #a8a8a8;
+  color: #737373;
 }
 
 .meta-mark span {
@@ -657,8 +657,8 @@ img {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  background: #1a1a1a;
-  color: #f5f5f5;
+  background: #fff;
+  color: #262626;
 }
 
 .ig__main {
@@ -676,7 +676,7 @@ img {
   justify-content: center;
   gap: 36px;
   padding: 150px 40px 60px;
-  border-right: 1px solid #2a2a2a;
+  border-right: 1px solid #dbdbdb;
 }
 
 .ig__logo {
@@ -732,9 +732,9 @@ img {
 .ig__lang {
   padding: 6px 16px;
   border-radius: 999px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid #dbdbdb;
   font-size: 14px;
-  color: #f5f5f5;
+  color: #262626;
 }
 
 .ig__label {
@@ -754,20 +754,20 @@ img {
   height: 56px;
   padding: 0 16px;
   border-radius: 12px;
-  border: 1px solid #3a3a3a;
-  background: transparent;
-  color: #f5f5f5;
+  border: 1px solid #dbdbdb;
+  background: #fff;
+  color: #262626;
   font-size: 16px;
   outline: none;
   transition: border-color 0.15s ease;
 }
 
 .ig__input::placeholder {
-  color: #8e8e8e;
+  color: #737373;
 }
 
 .ig__input:focus {
-  border-color: #737373;
+  border-color: #a8a8a8;
 }
 
 .ig__pass {
@@ -785,7 +785,7 @@ img {
   transform: translateY(-50%);
   border: 0;
   background: none;
-  color: #f5f5f5;
+  color: #262626;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -809,8 +809,8 @@ img {
 }
 
 .ig__submit:disabled {
-  background: #1d3a5f;
-  color: #6e8199;
+  background: #b2dffc;
+  color: #fff;
   cursor: default;
 }
 
@@ -818,7 +818,7 @@ img {
   margin-top: 26px;
   text-align: center;
   font-size: 16px;
-  color: #f5f5f5;
+  color: #262626;
   text-decoration: none;
 }
 
@@ -838,8 +838,8 @@ img {
   height: 56px;
   border: 0;
   border-radius: 12px;
-  background: #2a2a2a;
-  color: #f5f5f5;
+  background: #efefef;
+  color: #262626;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -847,7 +847,7 @@ img {
 }
 
 .ig__alt:hover {
-  background: #343434;
+  background: #dbdbdb;
 }
 
 .ig__outline {
@@ -868,7 +868,7 @@ img {
 }
 
 .ig__footer {
-  border-top: 1px solid #2a2a2a;
+  border-top: 1px solid #dbdbdb;
   padding: 20px 40px 26px;
   text-align: center;
 }
@@ -879,7 +879,7 @@ img {
   justify-content: center;
   gap: 8px 22px;
   font-size: 14px;
-  color: #b3b3b3;
+  color: #737373;
 }
 
 .ig__links a {
@@ -894,7 +894,7 @@ img {
 .ig__copy {
   margin: 14px 0 0;
   font-size: 14px;
-  color: #b3b3b3;
+  color: #737373;
 }
 
 .ig__copy span {
@@ -1112,9 +1112,16 @@ img {
 /* ---------- login responsive ---------- */
 
 @media (max-width: 900px) {
+  .ig,
+  .fb {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
   .ig__main,
   .fb__main {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .ig__left,
@@ -1125,23 +1132,26 @@ img {
   .ig__right,
   .fb__right {
     align-items: stretch;
+    min-height: 0;
     padding: 0;
   }
 
   .ig__form {
     flex: 1;
+    min-height: 0;
     max-width: none;
-    padding: 58px 24px 34px;
+    padding: clamp(58px, 7vh, 66px) 24px clamp(12px, 2vh, 26px);
   }
 
   .ig__mobile-top {
     display: flex;
+    flex: 0 0 auto;
     flex-direction: column;
     align-items: center;
   }
 
   .ig__mobile-top > svg {
-    margin-top: 108px;
+    margin-top: clamp(16px, 5.5vh, 88px);
   }
 
   .ig__mobile-rule {
@@ -1149,7 +1159,7 @@ img {
     justify-content: center;
     width: 100%;
     padding-top: 14px;
-    border-top: 1px solid #2a2a2a;
+    border-top: 1px solid #dbdbdb;
   }
 
   .ig__label {
@@ -1157,7 +1167,16 @@ img {
   }
 
   .ig__fields {
-    margin-top: 128px;
+    margin-top: clamp(18px, 7vh, 104px);
+    gap: clamp(14px, 3vh, 40px);
+  }
+
+  .ig__submit {
+    margin-top: 4px;
+  }
+
+  .ig__forgot {
+    margin-top: clamp(12px, 2vh, 26px);
   }
 
   .ig__alt {
@@ -1165,23 +1184,29 @@ img {
   }
 
   .ig__gap {
-    flex: 1;
+    flex: 1 1 0;
     height: auto;
-    min-height: 56px;
+    min-height: clamp(14px, 4vh, 56px);
   }
 
   .ig__footer {
     display: none;
   }
 
+  .meta-mark {
+    margin-top: clamp(10px, 2vh, 26px);
+  }
+
   .fb__form {
     flex: 1;
+    min-height: 0;
     max-width: none;
-    padding: 58px 24px 22px;
+    padding: clamp(58px, 7vh, 66px) 24px clamp(12px, 2vh, 26px);
   }
 
   .fb__mobile-top {
     display: flex;
+    flex: 0 0 auto;
     flex-direction: column;
     align-items: center;
     margin: 0 -24px;
@@ -1189,15 +1214,15 @@ img {
 
   .fb__banner {
     align-self: stretch;
-    padding: 0 24px 14px;
+    padding: 0 24px 10px;
   }
 
   .fb__lang {
-    margin-top: 20px;
+    margin-top: clamp(8px, 1.5vh, 20px);
   }
 
   .fb__mobile-logo {
-    margin-top: 104px;
+    margin-top: clamp(12px, 6vh, 96px);
   }
 
   .fb__label {
@@ -1205,20 +1230,29 @@ img {
   }
 
   .fb__fields {
-    margin-top: 130px;
+    margin-top: clamp(14px, 5.5vh, 140px);
+    gap: clamp(14px, 3vh, 40px);
+  }
+
+  .fb__submit {
+    margin-top: 4px;
+  }
+
+  .fb__forgot {
+    margin-top: clamp(12px, 2vh, 26px);
   }
 
   .fb__gap {
-    flex: 1;
+    flex: 1 1 0;
     height: auto;
-    min-height: 56px;
+    min-height: clamp(14px, 4vh, 56px);
   }
 
   .fb__mobile-links {
     display: flex;
     justify-content: center;
     gap: 22px;
-    margin-top: 18px;
+    margin-top: clamp(12px, 2vh, 18px);
     font-size: 12px;
   }
 
@@ -1229,6 +1263,36 @@ img {
 
   .fb__footer {
     display: none;
+  }
+}
+
+@media (max-width: 900px) and (max-height: 640px) {
+  .ig__mobile-top > svg,
+  .fb__mobile-logo {
+    margin-top: 12px;
+  }
+
+  .ig__fields,
+  .fb__fields {
+    margin-top: 16px;
+  }
+
+  .ig__gap,
+  .fb__gap {
+    min-height: 10px;
+  }
+
+  .ig__forgot,
+  .fb__forgot {
+    margin-top: 8px;
+  }
+
+  .meta-mark {
+    margin-top: 6px;
+  }
+
+  .fb__mobile-links {
+    margin-top: 6px;
   }
 }
 
