@@ -16,7 +16,7 @@ export default function BrandPanel() {
             />
           </svg>
           <span className="logo__word">
-            Nazil<span>Tattoos</span>
+            Fazil<span>Tattoos</span>
           </span>
         </a>
       </header>
@@ -51,5 +51,5 @@ export default function BrandPanel() {
         <span>4 studios nominated</span>
       </footer>
     </section>
-  )
+  );
 }
