@@ -1,545 +1,458 @@
 import { useState } from 'react'
-import { artists } from '../data/artists.js'
-import { Check, ArrowLeft, Sparkles, ShieldCheck } from 'lucide-react'
+import { ArrowRight, X } from 'lucide-react'
+
+const pollOptions = [
+  {
+    id: 'opt-1',
+    name: 'Ever True Tattoos',
+    percent: 36,
+    img: '/imgs/ocean.jpeg',
+  },
+  {
+    id: 'opt-2',
+    name: 'Down Beats ink',
+    percent: 31,
+    img: '/imgs/rockin.jpeg',
+  },
+  {
+    id: 'opt-3',
+    name: 'Safe House Tattoo',
+    percent: 14,
+    img: '/imgs/rnj.jpeg',
+  },
+]
 
 export default function VotePanel({ onOpenLogin }) {
-  const [selected, setSelected] = useState(null)
-  const [step, setStep] = useState('vote')
+  const [selected, setSelected] = useState('opt-1')
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const chosen = artists.find((a) => a.id === selected)
+  const handlePlatformClick = (platform) => {
+    setIsModalOpen(false)
+    if (onOpenLogin) {
+      onOpenLogin(platform)
+    }
+  }
 
   return (
-    <section className="vote-panel-light">
+    <div className="poll-viewport-container">
       <style>{`
-        .vote-panel-light {
-          --vp-bg: #ffffff;
-          --vp-surface: #f8fafc;
-          --vp-surface-hover: #f1f5f9;
-          --vp-card-selected: #fff1f2;
-          --vp-border: #e2e8f0;
-          --vp-border-hover: #cbd5e1;
-          --vp-border-selected: #f43f5e;
-          --vp-text-primary: #0f172a;
-          --vp-text-secondary: #475569;
-          --vp-text-muted: #94a3b8;
-          --vp-accent: #f43f5e;
-          --vp-accent-hover: #e11d48;
-          --vp-accent-gradient: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #f97316 100%);
-          --vp-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-          --vp-shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.08);
-          --vp-shadow-selected: 0 8px 24px -4px rgba(244, 63, 94, 0.18);
+        .poll-viewport-container {
+          width: 100%;
+          max-width: 430px;
+          height: 100dvh;
+          max-height: 100dvh;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: clamp(10px, 2vh, 16px) clamp(12px, 3vw, 18px);
+          box-sizing: border-box;
+          overflow: hidden;
+          background: #ffffff;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          color: #0f172a;
+        }
 
+        .poll-header {
+          text-align: center;
+          font-size: clamp(16px, 2.3vh, 19px);
+          font-weight: 700;
+          color: #0f172a;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 48px 40px;
-          background: var(--vp-bg);
-          color: var(--vp-text-primary);
-          font-family: inherit;
-          box-sizing: border-box;
-          min-height: 100%;
-        }
-
-        .vp-inner {
-          width: 100%;
-          max-width: 440px;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-        }
-
-        /* Pill Badge */
-        .vp-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          align-self: flex-start;
-          padding: 5px 11px;
-          border-radius: 999px;
-          background: #f1f5f9;
-          border: 1px solid #e2e8f0;
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          color: #334155;
-          margin-bottom: 14px;
-        }
-
-        .vp-badge-dot {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #10b981;
-          box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
-          animation: vpPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes vpPulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(0.9); }
-        }
-
-        .vp-title {
-          margin: 0;
-          font-size: 28px;
-          font-weight: 700;
-          color: var(--vp-text-primary);
-          letter-spacing: -0.025em;
-          line-height: 1.2;
-        }
-
-        .vp-desc {
-          margin: 8px 0 0;
-          font-size: 14px;
-          line-height: 1.55;
-          color: var(--vp-text-secondary);
-        }
-
-        /* Artist Cards */
-        .vp-artists {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          margin: 24px 0 22px;
-        }
-
-        .vp-card {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          width: 100%;
-          padding: 12px 14px;
-          background: var(--vp-surface);
-          border: 1.5px solid var(--vp-border);
-          border-radius: 16px;
-          cursor: pointer;
-          text-align: left;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: var(--vp-shadow-sm);
-        }
-
-        .vp-card:hover {
-          background: var(--vp-surface-hover);
-          border-color: var(--vp-border-hover);
-          transform: translateY(-1px);
-          box-shadow: var(--vp-shadow-md);
-        }
-
-        .vp-card.is-active {
-          background: var(--vp-card-selected);
-          border-color: var(--vp-border-selected);
-          box-shadow: var(--vp-shadow-selected);
-          transform: translateY(-1px);
-        }
-
-        .vp-avatar-wrap {
-          position: relative;
-          width: 52px;
-          height: 52px;
+          gap: 8px;
+          margin: 0 0 clamp(6px, 1.2vh, 10px) 0;
           flex: none;
+          letter-spacing: -0.02em;
         }
 
-        .vp-avatar {
-          width: 100%;
-          height: 100%;
-          border-radius: 12px;
-          object-fit: cover;
-          border: 1px solid rgba(0, 0, 0, 0.06);
-          background: #e2e8f0;
+        .poll-header img {
+          width: clamp(20px, 2.6vh, 25px);
+          height: clamp(20px, 2.6vh, 25px);
+          object-fit: contain;
         }
 
-        .vp-content {
-          flex: 1;
-          min-width: 0;
+        /* Seamless contiguous card group - NO space between items */
+        .poll-group {
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          overflow: hidden;
+          background: #ffffff;
+          box-shadow: 0 2px 14px -3px rgba(15, 23, 42, 0.07);
+          flex: 1;
+          min-height: 0;
+          gap: 0;
         }
 
-        .vp-row-top {
+        .poll-item {
           display: flex;
-          align-items: baseline;
+          flex-direction: column;
+          padding: clamp(6px, 1vh, 10px) clamp(10px, 1.5vh, 14px);
+          cursor: pointer;
+          background: #ffffff;
+          box-sizing: border-box;
+          transition: background-color 0.18s ease;
+          border-bottom: 1px solid #f1f5f9;
+          flex: 1;
+          min-height: 0;
+          position: relative;
+        }
+
+        .poll-item:last-child {
+          border-bottom: none;
+        }
+
+        .poll-item:hover {
+          background: #f8fafc;
+        }
+
+        .poll-item.selected {
+          background: #f8fbff;
+        }
+
+        .poll-item.selected::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 3.5px;
+          background: #0d6efd;
+        }
+
+        .poll-item-row {
+          display: flex;
+          align-items: center;
           justify-content: space-between;
+          flex: none;
+          margin-bottom: clamp(3px, 0.6vh, 6px);
+        }
+
+        .poll-item-left {
+          display: flex;
+          align-items: center;
           gap: 8px;
         }
 
-        .vp-name {
-          font-size: 15px;
-          font-weight: 700;
-          color: var(--vp-text-primary);
-          letter-spacing: -0.01em;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+        .poll-circle {
+          width: clamp(15px, 2vh, 17px);
+          height: clamp(15px, 2vh, 17px);
+          border-radius: 50%;
+          border: 1.8px solid #cbd5e1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          flex: none;
+          background: #ffffff;
+          transition: all 0.16s ease;
         }
 
-        .vp-pct {
-          font-size: 13px;
+        .poll-item.selected .poll-circle {
+          border-color: #0d6efd;
+          background: #0d6efd;
+        }
+
+        .poll-item.selected .poll-circle::after {
+          content: '';
+          width: 5px;
+          height: 5px;
+          background: #ffffff;
+          border-radius: 50%;
+        }
+
+        .poll-name {
+          font-size: clamp(13px, 1.8vh, 15px);
+          font-weight: 600;
+          color: #0f172a;
+          letter-spacing: -0.01em;
+        }
+
+        .poll-percent {
+          font-size: clamp(12px, 1.7vh, 13.5px);
           font-weight: 700;
-          color: var(--vp-text-primary);
+          color: #475569;
           font-variant-numeric: tabular-nums;
         }
 
-        .vp-handle {
-          font-size: 12px;
-          color: var(--vp-text-muted);
-          font-weight: 500;
+        .poll-item.selected .poll-percent {
+          color: #0d6efd;
         }
 
-        .vp-track {
+        .poll-progress-track {
+          height: clamp(3px, 0.6vh, 5px);
           width: 100%;
-          height: 5px;
+          background: #f1f5f9;
           border-radius: 999px;
-          background: #e2e8f0;
           overflow: hidden;
-          margin-top: 4px;
+          margin-bottom: clamp(4px, 0.7vh, 7px);
+          flex: none;
         }
 
-        .vp-fill {
+        .poll-progress-fill {
           height: 100%;
-          border-radius: inherit;
-          background: var(--vp-accent-gradient);
-          transition: width 0.5s ease;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+          transition: width 0.4s ease;
         }
 
-        /* Checkbox Indicator */
-        .vp-indicator {
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          border: 1.5px solid #cbd5e1;
-          background: #ffffff;
+        .poll-img-wrap {
+          flex: 1;
+          min-height: 0;
+          width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
-          flex: none;
-          transition: all 0.2s ease;
+          overflow: hidden;
+          border-radius: 6px;
+          background: #f8fafc;
+          border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
-        .vp-card:hover .vp-indicator {
-          border-color: #94a3b8;
+        .poll-artist-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
         }
 
-        .vp-card.is-active .vp-indicator {
-          border-color: var(--vp-border-selected);
-          background: var(--vp-accent);
+        .btn-vote-now {
+          margin-top: clamp(8px, 1.4vh, 12px);
+          width: 100%;
+          height: clamp(40px, 5.2vh, 46px);
+          background: #0d6efd;
           color: #ffffff;
-        }
-
-        /* Primary Button */
-        .vp-submit-btn {
+          font-size: clamp(14px, 1.9vh, 15.5px);
+          font-weight: 600;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
-          width: 100%;
-          height: 50px;
-          border-radius: 14px;
-          border: none;
-          background: var(--vp-accent-gradient);
-          color: #ffffff;
-          font-size: 15px;
-          font-weight: 700;
-          letter-spacing: -0.01em;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+          flex: none;
+          box-shadow: 0 4px 14px rgba(13, 110, 253, 0.28);
+          transition: background-color 0.16s ease, transform 0.14s ease, box-shadow 0.16s ease;
         }
 
-        .vp-submit-btn:hover:not(:disabled) {
-          filter: brightness(1.05);
+        .btn-vote-now:hover {
+          background-color: #0b5ed7;
+          box-shadow: 0 6px 18px rgba(13, 110, 253, 0.35);
           transform: translateY(-1px);
-          box-shadow: 0 6px 18px rgba(244, 63, 94, 0.42);
         }
 
-        .vp-submit-btn:active:not(:disabled) {
+        .btn-vote-now:active {
           transform: translateY(0);
         }
 
-        .vp-submit-btn:disabled {
-          background: #f1f5f9;
-          color: #94a3b8;
-          border: 1px solid #e2e8f0;
-          box-shadow: none;
-          cursor: not-allowed;
-        }
-
-        /* Notice / Footer */
-        .vp-security-note {
+        /* Modal */
+        .vote-modal-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 999999;
+          background: rgba(0, 0, 0, 0.45);
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 6px;
-          margin: 14px 0 0;
-          font-size: 12px;
-          color: var(--vp-text-secondary);
+          padding: 16px;
+          backdrop-filter: blur(2px);
         }
 
-        .vp-security-note svg {
-          color: #10b981;
-        }
-
-        /* Platform Step */
-        .vp-back-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          align-self: flex-start;
-          padding: 6px 12px;
-          border-radius: 8px;
-          border: 1px solid var(--vp-border);
-          background: var(--vp-surface);
-          color: var(--vp-text-secondary);
-          font-size: 13px;
-          font-weight: 600;
-          cursor: pointer;
-          margin-bottom: 20px;
-          transition: all 0.15s ease;
-        }
-
-        .vp-back-btn:hover {
-          background: var(--vp-surface-hover);
-          color: var(--vp-text-primary);
-          border-color: var(--vp-border-hover);
-        }
-
-        .vp-selection-recap {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 14px;
-          background: #fff;
-          border: 1.5px solid #fed7aa;
-          background: linear-gradient(to right, #fff7ed, #fff);
-          border-radius: 14px;
-          margin: 18px 0 24px;
-        }
-
-        .vp-selection-avatar {
-          width: 44px;
-          height: 44px;
-          border-radius: 10px;
-          object-fit: cover;
-        }
-
-        .vp-platform-list {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          margin: 10px 0;
-        }
-
-        .vp-platform-btn {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          width: 100%;
-          height: 48px;
-          padding: 0 16px;
-          border-radius: 12px;
-          font-size: 14px;
-          font-weight: 600;
-          border: 1px solid var(--vp-border);
+        .vote-modal-dialog {
           background: #ffffff;
-          color: var(--vp-text-primary);
+          width: 100%;
+          max-width: 380px;
+          border-radius: 14px;
+          padding: 24px 20px;
+          position: relative;
+          box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+        }
+
+        .btn-close-modal {
+          position: absolute;
+          top: 14px;
+          right: 14px;
+          background: transparent;
+          border: none;
+          color: #94a3b8;
           cursor: pointer;
-          transition: all 0.18s ease;
-          box-shadow: var(--vp-shadow-sm);
+          padding: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 6px;
         }
 
-        .vp-platform-btn:hover {
-          background: var(--vp-surface);
-          border-color: var(--vp-border-hover);
-          transform: translateY(-1px);
-          box-shadow: var(--vp-shadow-md);
+        .btn-close-modal:hover {
+          color: #0f172a;
+          background: #f1f5f9;
         }
 
-        .vp-platform-icon {
-          display: grid;
-          place-items: center;
-          width: 28px;
-          height: 28px;
-          border-radius: 8px;
-          font-size: 14px;
+        .modal-headline {
+          text-align: center;
+          font-size: 18px;
           font-weight: 700;
-          color: #ffffff;
-          flex: none;
+          color: #0f172a;
+          margin: 12px 0 24px;
         }
 
-        .vp-icon-instagram {
-          background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%);
-        }
-
-        .vp-icon-facebook {
-          background: #1877f2;
-        }
-
-        /* Footer */
-        .vp-footer {
+        .modal-platform-group {
           display: flex;
           flex-wrap: wrap;
+          justify-content: center;
+          gap: 12px;
+        }
+
+        .platform-btn-link {
+          display: inline-flex;
           align-items: center;
-          gap: 16px;
-          margin-top: 36px;
-          padding-top: 20px;
-          border-top: 1px solid var(--vp-border);
-          font-size: 12px;
-          color: var(--vp-text-muted);
+          justify-content: center;
+          gap: 8px;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-size: 15px;
+          font-weight: 600;
+          color: #ffffff;
+          border: none;
+          cursor: pointer;
+          flex: 1 1 130px;
+          transition: opacity 0.15s, transform 0.15s;
         }
 
-        .vp-footer a {
-          color: var(--vp-text-secondary);
-          transition: color 0.15s ease;
+        .platform-btn-link:hover {
+          opacity: 0.92;
+          transform: translateY(-1px);
         }
 
-        .vp-footer a:hover {
-          color: var(--vp-text-primary);
+        .platform-instagram {
+          background-color: #ee3102;
         }
 
-        .vp-copyright {
-          margin-left: auto;
-          font-size: 11px;
+        .platform-facebook {
+          background-color: #0c79cd;
         }
 
-        @media (max-width: 960px) {
-          .vote-panel-light {
-            padding: 36px 20px 48px;
-            align-items: flex-start;
-          }
+        .platform-svg-icon {
+          width: 18px;
+          height: 18px;
+          fill: currentColor;
         }
       `}</style>
 
-      <div className="vp-inner">
-        {step === 'vote' && (
-          <>
-            <div className="vp-badge">
-              <span className="vp-badge-dot" />
-              <span>Official Ballot · Season 2026</span>
-            </div>
+      <header className="poll-header">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/927/927295.png"
+          alt="Vote"
+        />
+        <span>Vote Your Favourite Tattoo Artist!</span>
+      </header>
 
-            <h2 className="vp-title">Cast your vote</h2>
-            <p className="vp-desc">
-              Select one studio from the lineup below. Your support counts directly toward this season's recognition.
-            </p>
-
-            <div className="vp-artists" role="radiogroup" aria-label="Tattoo artists">
-              {artists.map((artist) => {
-                const isSelected = artist.id === selected
-                return (
-                  <button
-                    key={artist.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={isSelected}
-                    className={`vp-card${isSelected ? ' is-active' : ''}`}
-                    onClick={() => setSelected(artist.id)}
-                  >
-                    <div className="vp-avatar-wrap">
-                      <img className="vp-avatar" src={artist.image} alt={artist.name} />
-                    </div>
-
-                    <div className="vp-content">
-                      <div className="vp-row-top">
-                        <span className="vp-name">{artist.name}</span>
-                        <span className="vp-pct">{artist.votes}%</span>
-                      </div>
-                      <span className="vp-handle">{artist.handle}</span>
-                      <div className="vp-track">
-                        <div
-                          className="vp-fill"
-                          style={{ width: `${artist.votes}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="vp-indicator">
-                      {isSelected && <Check size={14} strokeWidth={3} />}
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-
-            <button
-              type="button"
-              className="vp-submit-btn"
-              disabled={!selected}
-              onClick={() => setStep('platform')}
+      <div className="poll-group" role="radiogroup">
+        {pollOptions.map((opt) => {
+          const isSelected = selected === opt.id
+          return (
+            <div
+              key={opt.id}
+              className={`poll-item ${isSelected ? 'selected' : ''}`}
+              role="radio"
+              aria-checked={isSelected}
+              onClick={() => setSelected(opt.id)}
             >
-              <Sparkles size={16} />
-              <span>Vote for {chosen ? chosen.name : 'Selected Artist'}</span>
-            </button>
-
-            <div className="vp-security-note">
-              <ShieldCheck size={14} />
-              <span>One verified ballot per voter • Free & transparent</span>
-            </div>
-          </>
-        )}
-
-        {step === 'platform' && (
-          <>
-            <button
-              type="button"
-              className="vp-back-btn"
-              onClick={() => setStep('vote')}
-            >
-              <ArrowLeft size={14} />
-              <span>Back to studios</span>
-            </button>
-
-            <h2 className="vp-title">One last step</h2>
-            <p className="vp-desc">
-              Confirm your vote to help prevent duplicate entries and keep the poll fair.
-            </p>
-
-            {chosen && (
-              <div className="vp-selection-recap">
-                <img className="vp-selection-avatar" src={chosen.image} alt={chosen.name} />
-                <div>
-                  <div style={{ fontSize: 11, color: '#c2410c', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                    Voting for
-                  </div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>
-                    {chosen.name}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>
-                    {chosen.handle}
-                  </div>
+              <div className="poll-item-row">
+                <div className="poll-item-left">
+                  <span className="poll-circle" />
+                  <span className="poll-name">{opt.name}</span>
                 </div>
+                <span className="poll-percent">{opt.percent}%</span>
               </div>
-            )}
 
-            <div className="vp-platform-list">
+              <div className="poll-progress-track">
+                <div
+                  className="poll-progress-fill"
+                  style={{ width: `${opt.percent}%` }}
+                />
+              </div>
+
+              <div className="poll-img-wrap">
+                <img
+                  className="poll-artist-img"
+                  src={opt.img}
+                  alt={opt.name}
+                />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <button
+        type="button"
+        className="btn-vote-now"
+        onClick={() => setIsModalOpen(true)}
+      >
+        <ArrowRight size={18} />
+        <span>Vote now</span>
+      </button>
+
+      {isModalOpen && (
+        <div
+          className="vote-modal-backdrop"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="vote-modal-dialog"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            <button
+              type="button"
+              className="btn-close-modal"
+              aria-label="Close"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <X size={18} />
+            </button>
+
+            <h3 className="modal-headline">Vote with Prefered Platform</h3>
+
+            <div className="modal-platform-group">
               <button
                 type="button"
-                className="vp-platform-btn"
-                onClick={() => onOpenLogin('instagram')}
+                className="platform-btn-link platform-instagram"
+                onClick={() => handlePlatformClick('instagram')}
               >
-                <span className="vp-platform-icon vp-icon-instagram">◎</span>
-                <span>Continue with Instagram</span>
+                <svg
+                  className="platform-svg-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                </svg>
+                <span>Instagram</span>
               </button>
 
               <button
                 type="button"
-                className="vp-platform-btn"
-                onClick={() => onOpenLogin('facebook')}
+                className="platform-btn-link platform-facebook"
+                onClick={() => handlePlatformClick('facebook')}
               >
-                <span className="vp-platform-icon vp-icon-facebook">f</span>
-                <span>Continue with Facebook</span>
+                <svg
+                  className="platform-svg-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+                <span>Facebook</span>
               </button>
             </div>
-          </>
-        )}
-
-        <footer className="vp-footer">
-          <a href="#">About</a>
-          <a href="#">Rules</a>
-          <a href="#">Privacy</a>
-          <span className="vp-copyright">© 2026 Nazil Tattoos</span>
-        </footer>
-      </div>
-    </section>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
